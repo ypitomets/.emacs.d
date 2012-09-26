@@ -45,6 +45,10 @@
 
 ;;AUCTex
 (require 'tex-site)
+(setq TeX-auto-save t) 
+(setq TeX-parse-self t) 
+(setq TeX-save-query nil)
+;(setq TeX-PDF-mode t)
 
 ;;Octave
 (autoload 'octave-mode "octave-mod" nil t)
@@ -60,7 +64,7 @@
 (tabbar-mode t)
 
 ;;cua
-(cua-mode t)
+;;(cua-mode t)
 
 (defun tabbar-buffer-groups ()
   "Return the list of group names the current buffer belongs to.
@@ -87,6 +91,27 @@ Emacs buffer are those starting with “*”."
 
 ;; Esc-Esc combinations
 (global-set-key (kbd "\e\el") 'goto-line)
+
+(defun arrange-class ()
+  "Arrange window for class - Latex"
+ (interactive)
+  (arrange-frame 100 50 960 10))
+
+(defun arrange-center ()
+  "Arrange window for shell operation"
+  (interactive)
+  (arrange-frame 200 60 100 10))
+
+(defun arrange-frame (w h x y)
+  "Set the width, height, and x/y position of the current frame"
+  (interactive "p")
+  (let ((frame (selected-frame)))
+    (set-frame-position frame x y)
+    (set-frame-height (selected-frame) h)
+    (set-frame-width (selected-frame) w)))
+
+(global-set-key (kbd "\e\ep") 'arrange-class)
+(global-set-key (kbd "\e\ei") 'arrange-center)
 
 ;; (global-set-key (kbd "C-x C-<left>") 'tabbar-backward-group)
 
