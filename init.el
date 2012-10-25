@@ -4,6 +4,8 @@
 
 (require 'package)
 (add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/" ) t)
+(add-to-list 'package-archives
              '("ELPA" . "http://tromey.com/elpa/") t)
 (add-to-list 'package-archives
              '("gnu" . "http://marmalade-repo.org/packages/" ) t)
@@ -11,6 +13,8 @@
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("sunrise" . "http://joseito.republika.pl/sunrise-commander/") t)
+
+(setq url-http-attempt-keepalives nil)
 (package-initialize)
 
 ;;bookmarks
@@ -55,6 +59,21 @@
 (setq auto-mode-alist
       (cons '("\\.m$" . octave-mode) auto-mode-alist))
 
+;; Scala
+(add-to-list 'load-path "~/.emacs.d/scala-emacs")
+(require 'scala-mode-auto)
+(add-hook 'scala-mode-hook
+          '(lambda ()
+             (scala-mode-feature-electric-mode)))
+(require 'scala-mode)
+(add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode))
+(add-to-list 'load-path "~/.emacs.d/scala-ensime/elisp/")
+(require 'ensime)
+(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+; to be able to launch Scala REPL and SBT
+(push "/usr/local/bin/" exec-path)
+(push "/opt/local/share/sbt/" exec-path)
+
 ;;aspell
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
@@ -79,6 +98,12 @@ Emacs buffer are those starting with “*”."
      )
     ((eq major-mode 'dired-mode)
      "Dired"
+     )
+    ((eq major-mode 'scala-mode)
+     "Scala"
+     )
+    ((eq major-mode 'java-mode)
+     "Java"
      )
     (t
      "User Buffer"
@@ -151,6 +176,15 @@ Emacs buffer are those starting with “*”."
   ;; put the point in the lowest line and return
   (next-line arg))
 (global-set-key (kbd "s-d") 'duplicate-line)
+
+(defun insert-line-below (arg)
+  "Insert empty line below current one"
+  (interactive "*p")
+  ;; TODO!!!
+  ;; save the point for undo
+  (setq buffer-undo-list (cons (point) buffer-undo-list))
+
+  )
 
 ;;copy line (copy whole line)
 (defun jao-copy-line ()
