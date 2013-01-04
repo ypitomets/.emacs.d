@@ -82,6 +82,14 @@
 (require 'tabbar)
 (tabbar-mode t)
 
+;;helm (anything)
+(add-to-list 'load-path "/Users/ylyakh/emacs/.emacs.d/elpa/helm-20130101.1708/")
+(require 'helm-config)
+
+;;; helm
+(add-to-list 'load-path "/Users/ylyakh/emacs/.emacs.d/elpa/helm-20130101.1708")
+(require 'helm-config)
+
 ;;cua
 ;;(cua-mode t)
 
