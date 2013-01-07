@@ -1,6 +1,7 @@
 ;; setting Super ＆ Hyper keys for the Mac keyboard, for emacs running in OS X
-;(setq mac-option-modifier 'super) ; sets the Option(Alt) key as Super
-;(setq mac-command-modifier 'meta) ; sets the Command key as Meta
+;; M-x load-file reloads this
+;;(setq mac-option-modifier 'super) ; sets the Option(Alt) key as Super
+;;(setq mac-command-modifier 'meta) ; sets the Command key as Meta
 
 (require 'package)
 (add-to-list 'package-archives
@@ -82,13 +83,33 @@
 (require 'tabbar)
 (tabbar-mode t)
 
-;;helm (anything)
-(add-to-list 'load-path "/Users/ylyakh/emacs/.emacs.d/elpa/helm-20130101.1708/")
-(require 'helm-config)
+;; comment/uncomment line or region
+(defun comment-dwim-line (&optional arg)
+  "Replacement for the comment-dwim command.
+   If no region is selected and current line is not blank and we are not at the end of the line,
+   then comment current line.
+   Replaces default behaviour of comment-dwim, when it inserts comment at the end of the line."
+  (interactive "*P")
+  (comment-normalize-vars)
+  (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
+      (comment-or-uncomment-region (line-beginning-position) (line-end-position))
+    (comment-dwim arg)))
+(global-set-key (kbd "s-/") 'comment-dwim-line)
+;; (global-set-key (kbd "M-;") 'comment-dwim-line)
 
-;;; helm
+(defun select-current-line ()
+  "Select the current line"
+  (interactive)
+  (end-of-line) ; move to end of line
+  (set-mark (line-beginning-position)))
+
+;;helm (anything)
 (add-to-list 'load-path "/Users/ylyakh/emacs/.emacs.d/elpa/helm-20130101.1708")
 (require 'helm-config)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+;; M-/ sould be set to hippie-expand!!!
+(global-set-key (kbd "M-/") 'hippie-expand)
 
 ;;cua
 ;;(cua-mode t)
@@ -122,9 +143,6 @@ Emacs buffer are those starting with “*”."
 (global-set-key (kbd "s-}") 'tabbar-forward)
 (global-set-key (kbd "s-{") 'tabbar-backward)
 
-;; Esc-Esc combinations
-(global-set-key (kbd "\e\el") 'goto-line)
-
 (defun arrange-class ()
   "Arrange window for class - Latex"
  (interactive)
@@ -143,8 +161,11 @@ Emacs buffer are those starting with “*”."
     (set-frame-height (selected-frame) h)
     (set-frame-width (selected-frame) w)))
 
+;; Esc-Esc combinations
+(global-set-key (kbd "\e\el") 'goto-line)
 (global-set-key (kbd "\e\ep") 'arrange-class)
 (global-set-key (kbd "\e\ei") 'arrange-center)
+
 
 ;; (global-set-key (kbd "C-x C-<left>") 'tabbar-backward-group)
 
@@ -188,11 +209,9 @@ Emacs buffer are those starting with “*”."
 (defun insert-line-below (arg)
   "Insert empty line below current one"
   (interactive "*p")
-  ;; TODO!!!
-  ;; save the point for undo
-  (setq buffer-undo-list (cons (point) buffer-undo-list))
-
-  )
+  (end-of-line)
+  (newline arg))
+(global-set-key (kbd "<S-return>") 'insert-line-below)
 
 ;;copy line (copy whole line)
 (defun jao-copy-line ()
@@ -203,11 +222,8 @@ Emacs buffer are those starting with “*”."
   (message "Line copied"))
 (global-set-key (kbd "s-e") 'jao-copy-line)
 
-
-
 ;;TRAMP settings - for ssh
 ;;(add-to-list 'tramp-default-proxies-alist '(".*" "\`root\'" "/ssh:%h:"))
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
