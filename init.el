@@ -29,7 +29,7 @@
   (package-refresh-contents))
 
 ;; packages to install 
-(defvar my-packages '(starter-kit starter-kit-lisp starter-kit-bindings starter-kit-eshell tabbar sunrise-commander) "A list of packages to ensure are installed at launch.")
+(defvar my-packages '(starter-kit starter-kit-lisp starter-kit-bindings starter-kit-eshell tabbar sunrise-commander sr-speedbar) "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -83,6 +83,9 @@
 (require 'tabbar)
 (tabbar-mode t)
 
+;; sr-speedbar - speedbar in the same frame
+(require 'sr-speedbar)
+
 ;; comment/uncomment line or region
 (defun comment-dwim-line (&optional arg)
   "Replacement for the comment-dwim command.
@@ -91,11 +94,11 @@
    Replaces default behaviour of comment-dwim, when it inserts comment at the end of the line."
   (interactive "*P")
   (comment-normalize-vars)
-  (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
+  (if (and (not (region-active-p)) (not (looking-at "[ \t]*$"))) 
       (comment-or-uncomment-region (line-beginning-position) (line-end-position))
     (comment-dwim arg)))
 (global-set-key (kbd "s-/") 'comment-dwim-line)
-;; (global-set-key (kbd "M-;") 'comment-dwim-line)
+(global-set-key (kbd "C-;") 'comment-dwim-line)
 
 (defun select-current-line ()
   "Select the current line"
@@ -103,9 +106,13 @@
   (end-of-line) ; move to end of line
   (set-mark (line-beginning-position)))
 
+;;clojure
+(add-hook 'clojure-mode-hook 'paredit-mode)
+
 ;;helm (anything)
-(add-to-list 'load-path "/Users/ylyakh/emacs/.emacs.d/elpa/helm-20130101.1708")
+(add-to-list 'load-path "/Users/ylyakh/emacs/.emacs.d/elpa/helm-20130127.836")
 (require 'helm-config)
+;; (global-set-key (kbd "C-x C-f") 'ido-find-files)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 ;; M-/ sould be set to hippie-expand!!!
@@ -166,7 +173,6 @@ Emacs buffer are those starting with “*”."
 (global-set-key (kbd "\e\ep") 'arrange-class)
 (global-set-key (kbd "\e\ei") 'arrange-center)
 
-
 ;; (global-set-key (kbd "C-x C-<left>") 'tabbar-backward-group)
 
 ;; duplicate line - with undo and hookers
@@ -223,13 +229,17 @@ Emacs buffer are those starting with “*”."
 (global-set-key (kbd "s-e") 'jao-copy-line)
 
 ;;TRAMP settings - for ssh
-;;(add-to-list 'tramp-default-proxies-alist '(".*" "\`root\'" "/ssh:%h:"))
+;; (add-to-list 'tramp-default-proxies-alist '(".*" "\`root\'" "/ssh:%h:"))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(fill-column 80))
+ '(blink-cursor-mode nil)
+ '(fill-column 80)
+ '(show-paren-mode t)
+ '(text-mode-hook (quote (turn-on-flyspell text-mode-hook-identify)))
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
