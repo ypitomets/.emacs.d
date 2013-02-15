@@ -1,5 +1,6 @@
 ;; setting Super ＆ Hyper keys for the Mac keyboard, for emacs running in OS X
 ;; M-x load-file reloads this
+;; M-x eval-buffer
 ;;(setq mac-option-modifier 'super) ; sets the Option(Alt) key as Super
 ;;(setq mac-command-modifier 'meta) ; sets the Command key as Meta
 
@@ -29,7 +30,15 @@
   (package-refresh-contents))
 
 ;; packages to install 
-(defvar my-packages '(starter-kit starter-kit-lisp starter-kit-bindings starter-kit-eshell tabbar sunrise-commander sr-speedbar) "A list of packages to ensure are installed at launch.")
+(defvar my-packages '(starter-kit
+                      starter-kit-lisp
+                      starter-kit-bindings
+                      starter-kit-eshell
+                      tabbar
+                      sunrise-commander
+                      clojure-mode
+                      clojure-test-mode
+                      nrepl) "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -45,6 +54,12 @@
 (global-set-key (kbd "\e\el") 'goto-line)
 
 ;;environment variables
+(defun set-exec-path-from-shell-PATH ()
+  (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo $PATH'")))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(when window-system (set-exec-path-from-shell-PATH))
 (setenv "PATH"
      (concat (getenv "PATH")  ":/bin:/usr/local/bin:/usr/usr/texbin/latex:/usr/texbin/xdvi"))
 
@@ -112,8 +127,8 @@
 ;;helm (anything)
 (add-to-list 'load-path "/Users/ylyakh/emacs/.emacs.d/elpa/helm-20130127.836")
 (require 'helm-config)
-;; (global-set-key (kbd "C-x C-f") 'ido-find-files)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
+;;(global-set-key (kbd "C-x C-f") 'ido-find-files)
 
 ;; M-/ sould be set to hippie-expand!!!
 (global-set-key (kbd "M-/") 'hippie-expand)
