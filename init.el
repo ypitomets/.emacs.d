@@ -24,7 +24,6 @@
   bookmark-default-file "~/.emacs.d/bookmarks" ;; keep my ~/ clean
   bookmark-save-flag 1)                        ;; autosave each change
 
-
 ;; list of required packages:
 (when (not package-archive-contents)
   (package-refresh-contents))
@@ -50,8 +49,16 @@
 (require 'goto-last-change)
 (global-set-key  (kbd "C-q") 'goto-last-change)
 
+(global-set-key  (kbd "M-g") 'goto-line)
 ;; Esc-Esc combinations
 (global-set-key (kbd "\e\el") 'goto-line)
+
+;;clojure, nrepl
+(add-hook 'clojure-mode-hook 'paredit-mode)
+
+(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+
+;; (setq inferior-lisp-program "/opt/local/bin/clj")
 
 ;;environment variables
 (defun set-exec-path-from-shell-PATH ()
@@ -121,14 +128,14 @@
   (end-of-line) ; move to end of line
   (set-mark (line-beginning-position)))
 
-;;clojure
-(add-hook 'clojure-mode-hook 'paredit-mode)
-
 ;;helm (anything)
 (add-to-list 'load-path "/Users/ylyakh/emacs/.emacs.d/elpa/helm-20130127.836")
 (require 'helm-config)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
 ;;(global-set-key (kbd "C-x C-f") 'ido-find-files)
+
+;; open recent file
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 ;; M-/ sould be set to hippie-expand!!!
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -222,7 +229,6 @@ Emacs buffer are those starting with “*”."
       ;; create the undo information
       (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list)))
     ) ; end-of-let
-
   ;; put the point in the lowest line and return
   (next-line arg))
 (global-set-key (kbd "s-d") 'duplicate-line)
@@ -232,7 +238,7 @@ Emacs buffer are those starting with “*”."
   (interactive "*p")
   (end-of-line)
   (newline arg))
-(global-set-key (kbd "<S-return>") 'insert-line-below)
+(global-set-key (kbd "<s-return>") 'insert-line-below)
 
 ;;copy line (copy whole line)
 (defun jao-copy-line ()
@@ -253,8 +259,11 @@ Emacs buffer are those starting with “*”."
  '(blink-cursor-mode nil)
  '(fill-column 80)
  '(show-paren-mode t)
- '(text-mode-hook (quote (turn-on-flyspell text-mode-hook-identify)))
- '(tool-bar-mode nil))
+ '(text-mode-hook
+   (quote (turn-on-flyspell text-mode-hook-identify)))
+ '(tool-bar-mode nil)
+ '(menu-bar-mode t))
+(auto-fill-mode nil) ;;!!!!????
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
